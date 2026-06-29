@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+{% block title %}✅ No Flood Chance — Rising Waters{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div class="eyebrow">Prediction Result — Scenario Analysis Complete</div>
+  <h1>Risk Assessment Output</h1>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     NO FLOOD CHANCE RESULT BANNER
+════════════════════════════════════════════════ -->
+<div class="result-banner no-flood" role="status" aria-live="polite" id="result-banner-noflood">
+
+  <!-- Safe pulse icon -->
+  <div class="safe-icon-wrap" aria-hidden="true">
+    <div class="safe-pulse"></div>
+    <div class="safe-core">✅</div>
+  </div>
+
+  <h1>NO FLOOD CHANCE</h1>
+
+  <p class="result-sub">
+    The machine learning model has assessed the input meteorological data<br>
+    and confirmed <strong>low probability of flooding</strong> for this area.
+  </p>
+
+  <!-- Confidence Display -->
+  <div class="prob-display safe-prob" role="status">
+    <span>Model Confidence:</span>
+    <span class="prob-value safe-val">{{ 100 - probability }}%</span>
+    <span>no-flood probability</span>
+  </div>
+
+  <!-- SVG Confidence Arc -->
+  <div class="confidence-arc no-flood" aria-label="Safe probability arc gauge">
+    <svg viewBox="0 0 140 140" width="140" height="140">
+      <circle class="track" cx="70" cy="70" r="60"/>
+      <circle class="fill"
+        cx="70" cy="70" r="60"
+        stroke-dasharray="{{ ((100 - probability) / 100 * 376.99) | round(1) }} 376.99"
+        stroke-dashoffset="0"/>
+    </svg>
+    <div class="arc-label">
+      <div class="arc-value safe-arc-val">{{ 100 - probability }}%</div>
+      <div class="arc-text">SAFE</div>
+    </div>
+  </div>
+</div><!-- /result-banner -->
+
+
+<!-- ════════════════════════════════════════════════
+     SAFETY STATUS INDICATOR
+════════════════════════════════════════════════ -->
+<div class="card status-card" role="region" aria-label="Safety Status">
+  <div class="card-title">
+    <div class="icon">🟢</div>
+    Current Safety Status
+  </div>
+  <div class="status-grid">
+    <div class="status-badge safe-badge">
+      <div class="sb-icon">🟢</div>
+      <div class="sb-label">ALL CLEAR</div>
+      <div class="sb-desc">Conditions within safe thresholds</div>
+    </div>
+    <div class="status-info">
+      <p>
+        Based on the submitted meteorological readings, the
+        <strong style="color:var(--teal);">XGBoost</strong> classifier
+        returns a <strong style="color:white;">{{ 100 - probability }}%</strong>
+        confidence of <strong style="color:var(--safe);">no flooding</strong>.
+        Current conditions do not meet the threshold for a flood advisory.
+        Continue routine monitoring protocols and re-assess if conditions change.
+      </p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     RECOMMENDED MONITORING ACTIONS
+════════════════════════════════════════════════ -->
+<div class="card" role="region" aria-label="Recommended Monitoring Actions">
+  <div class="card-title">
+    <div class="icon">📋</div>
+    Recommended Monitoring Actions
+  </div>
+
+  <div class="actions-grid">
+    <div class="action-item safe" id="action-monitor">
+      <div class="a-icon safe-icon">📡</div>
+      <div>
+        <h5>Continue Routine Monitoring</h5>
+        <p>Maintain regular observation of all weather stations, river gauges, and rainfall data. Log readings every 4–6 hours.</p>
+      </div>
+    </div>
+    <div class="action-item safe" id="action-trend">
+      <div class="a-icon safe-icon">📈</div>
+      <div>
+        <h5>Watch for Adverse Trends</h5>
+        <p>Flag any rapid increases in river level, seasonal rainfall, or drops in cloud visibility for immediate re-assessment.</p>
+      </div>
+    </div>
+    <div class="action-item safe" id="action-systems">
+      <div class="a-icon safe-icon">✅</div>
+      <div>
+        <h5>System Readiness Check</h5>
+        <p>Confirm all flood barriers, early-warning sirens, pumping stations and drainage channels are operational and cleared.</p>
+      </div>
+    </div>
+    <div class="action-item safe" id="action-schedule">
+      <div class="a-icon safe-icon">🗓️</div>
+      <div>
+        <h5>Schedule Re-Assessment</h5>
+        <p>Plan the next prediction run in 6–12 hours. Increase frequency to every 2 hours if weather conditions deteriorate.</p>
+      </div>
+    </div>
+    <div class="action-item safe" id="action-history">
+      <div class="a-icon safe-icon">📂</div>
+      <div>
+        <h5>Archive for Analysis</h5>
+        <p>This prediction has been saved to the History log. Analysts can review trends over time via the History page.</p>
+      </div>
+    </div>
+    <div class="action-item safe" id="action-community">
+      <div class="a-icon safe-icon">🏘️</div>
+      <div>
+        <h5>Community Communication</h5>
+        <p>Share current no-flood status with local authorities and communities to maintain public confidence and awareness.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     INPUT PARAMETERS SUMMARY
+════════════════════════════════════════════════ -->
+<div class="card" role="region" aria-label="Input Data Used for Prediction">
+  <div class="card-title">
+    <div class="icon">📊</div>
+    Input Meteorological Data
+    <span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted);font-weight:400;">
+      Parameters submitted for this assessment
+    </span>
+  </div>
+
+  <div class="input-summary">
+    {% for feature, value in inputs.items() %}
+    {% set label, unit = labels[feature] %}
+    <div class="summary-item safe-highlight">
+      <div class="s-label">{{ label }}</div>
+      <div class="s-value">
+        {{ value }}
+        <span class="s-unit">{{ unit }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     ACTION BUTTONS
+════════════════════════════════════════════════ -->
+<div class="result-actions">
+  <a href="{{ url_for('predict') }}" class="btn btn-success" id="new-assessment-safe-btn">
+    🔍 New Assessment
+  </a>
+  <a href="{{ url_for('history') }}" class="btn btn-outline" id="view-log-safe-btn">
+    📋 View Prediction Log
+  </a>
+  <a href="{{ url_for('home') }}" class="btn btn-outline" id="back-dashboard-safe-btn">
+    🏠 Dashboard
+  </a>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     PAGE-SPECIFIC STYLES
+════════════════════════════════════════════════ -->
+<style>
+/* Safe pulse icon */
+.safe-icon-wrap {
+  position: relative;
+  width: 80px; height: 80px;
+  margin: 0 auto 1.5rem;
+}
+.safe-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--safe);
+  opacity: 0;
+  animation: safePulse 2.5s ease-out infinite;
+}
+@keyframes safePulse {
+  0%   { transform: scale(0.6); opacity: 0.7; }
+  100% { transform: scale(2.0); opacity: 0; }
+}
+.safe-core {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Safe confidence text */
+.safe-prob .prob-value { color: var(--safe) !important; }
+.safe-val  { color: var(--safe) !important; }
+.safe-arc-val { color: var(--safe) !important; }
+
+/* Status grid */
+.status-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.25rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+.status-badge.safe-badge {
+  text-align: center;
+  padding: 1.25rem 1.75rem;
+  border-radius: 14px;
+  min-width: 130px;
+  background: rgba(0,230,118,0.10);
+  border: 2px solid rgba(0,230,118,0.35);
+  box-shadow: 0 0 20px rgba(0,230,118,0.12);
+}
+.sb-icon { font-size: 1.8rem; margin-bottom: 0.3rem; }
+.sb-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--safe);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.2rem;
+}
+.sb-desc { font-size: 0.72rem; color: var(--text-muted); }
+.status-info p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* Safe action items */
+.action-item.safe .a-icon.safe-icon {
+  background: rgba(0,230,118,0.10);
+}
+
+/* Safe-tinted summary items */
+.summary-item.safe-highlight {
+  border-color: rgba(0,230,118,0.12);
+}
+.summary-item.safe-highlight:hover {
+  border-color: rgba(0,230,118,0.35);
+  background: rgba(0,230,118,0.04);
+}
+
+/* Confidence arc sizing */
+.confidence-arc {
+  width: 140px; height: 140px;
+  margin: 1.5rem auto 0;
+  position: relative;
+}
+.confidence-arc svg { transform: rotate(-90deg); }
+.confidence-arc .track {
+  fill: none;
+  stroke: rgba(255,255,255,0.08);
+  stroke-width: 10;
+}
+.confidence-arc .fill {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+.confidence-arc.no-flood .fill {
+  stroke: var(--safe);
+  filter: drop-shadow(0 0 8px var(--safe));
+}
+.arc-label {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.arc-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+.arc-text {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 600px) {
+  .status-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+{% endblock %}

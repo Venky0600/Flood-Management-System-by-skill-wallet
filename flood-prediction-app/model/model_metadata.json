@@ -1,0 +1,18 @@
+{
+  "feature_names": [
+    "annual_rainfall",
+    "seasonal_rainfall",
+    "cloud_visibility",
+    "humidity",
+    "temperature",
+    "river_level"
+  ],
+  "best_model": "XGBoost",
+  "best_accuracy": 96.55,
+  "all_results": {
+    "Decision Tree": 78.17,
+    "Random Forest": 82.0,
+    "KNN": 80.67,
+    "XGBoost": 96.55
+  }
+}

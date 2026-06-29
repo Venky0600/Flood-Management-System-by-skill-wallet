@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+{% block title %}⚠️ FLOOD CHANCE DETECTED — Rising Waters{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div class="eyebrow">Prediction Result — Scenario Analysis Complete</div>
+  <h1>Risk Assessment Output</h1>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     FLOOD CHANCE RESULT BANNER
+════════════════════════════════════════════════ -->
+<div class="result-banner flood" role="alert" aria-live="assertive" id="result-banner-flood">
+
+  <!-- Animated warning rings -->
+  <div class="warning-rings" aria-hidden="true">
+    <div class="ring ring-1"></div>
+    <div class="ring ring-2"></div>
+    <div class="ring ring-3"></div>
+    <div class="warning-core">⚠️</div>
+  </div>
+
+  <h1>FLOOD CHANCE DETECTED</h1>
+
+  <p class="result-sub">
+    The machine learning model has assessed the input meteorological data<br>
+    and identified a <strong>high probability of flooding</strong> in this area.
+  </p>
+
+  <!-- Confidence Display -->
+  <div class="prob-display" role="status">
+    <span>Model Confidence:</span>
+    <span class="prob-value">{{ probability }}%</span>
+    <span>flood probability</span>
+  </div>
+
+  <!-- SVG Confidence Arc -->
+  <div class="confidence-arc flood" aria-label="Flood probability arc gauge">
+    <svg viewBox="0 0 140 140" width="140" height="140">
+      <circle class="track" cx="70" cy="70" r="60"/>
+      <circle class="fill"
+        cx="70" cy="70" r="60"
+        stroke-dasharray="{{ (probability / 100 * 376.99) | round(1) }} 376.99"
+        stroke-dashoffset="0"/>
+    </svg>
+    <div class="arc-label">
+      <div class="arc-value">{{ probability }}%</div>
+      <div class="arc-text">RISK</div>
+    </div>
+  </div>
+</div><!-- /result-banner -->
+
+
+<!-- ════════════════════════════════════════════════
+     EMERGENCY ALERT LEVEL
+════════════════════════════════════════════════ -->
+<div class="card alert-level-card" role="region" aria-label="Alert Level">
+  <div class="card-title">
+    <div class="icon">🚨</div>
+    Emergency Alert Level
+  </div>
+  <div class="alert-level-grid">
+    {% if probability >= 80 %}
+    <div class="alert-badge critical">
+      <div class="al-icon">🔴</div>
+      <div class="al-label">CRITICAL</div>
+      <div class="al-desc">Immediate evacuation required</div>
+    </div>
+    {% elif probability >= 60 %}
+    <div class="alert-badge high">
+      <div class="al-icon">🟠</div>
+      <div class="al-label">HIGH</div>
+      <div class="al-desc">Evacuation advisory issued</div>
+    </div>
+    {% else %}
+    <div class="alert-badge moderate">
+      <div class="al-icon">🟡</div>
+      <div class="al-label">MODERATE</div>
+      <div class="al-desc">Monitor closely — prepare response</div>
+    </div>
+    {% endif %}
+    <div class="alert-info">
+      <p>
+        Based on the <strong style="color:white;">{{ probability }}%</strong> flood probability returned by the
+        <strong style="color:var(--teal);">XGBoost</strong> classifier, the following
+        emergency response actions should be initiated immediately.
+      </p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     RECOMMENDED RESPONSE ACTIONS (Scenario 1 & 2)
+════════════════════════════════════════════════ -->
+<div class="card" role="region" aria-label="Emergency Response Protocol">
+  <div class="card-title">
+    <div class="icon">📋</div>
+    Emergency Response Protocol
+  </div>
+
+  <div class="actions-grid">
+    <div class="action-item" id="action-alert">
+      <div class="a-icon">📢</div>
+      <div>
+        <h5>Issue Public Alert</h5>
+        <p>Activate emergency broadcast systems. Notify residents in all flood-prone zones via SMS, sirens, and local media channels immediately.</p>
+      </div>
+    </div>
+    <div class="action-item" id="action-evacuate">
+      <div class="a-icon">🏃</div>
+      <div>
+        <h5>Evacuation Advisory</h5>
+        <p>Direct residents in low-lying and riverside areas to designated evacuation shelters. Prioritise elderly, disabled, and vulnerable populations.</p>
+      </div>
+    </div>
+    <div class="action-item" id="action-response">
+      <div class="a-icon">🚁</div>
+      <div>
+        <h5>Mobilise Response Teams</h5>
+        <p>Deploy disaster response teams, rescue boats, and emergency personnel. Coordinate with NDMA, state authorities and local bodies.</p>
+      </div>
+    </div>
+    <div class="action-item" id="action-infra">
+      <div class="a-icon">🏗️</div>
+      <div>
+        <h5>Infrastructure Control</h5>
+        <p>Activate and close flood gates. Maximise pumping capacity at drainage stations. Restrict access to bridges and underpasses.</p>
+      </div>
+    </div>
+    <div class="action-item" id="action-resource">
+      <div class="a-icon">📦</div>
+      <div>
+        <h5>Resource Deployment</h5>
+        <p>Pre-position food, medicine, clean water, and emergency supplies in or near predicted flood zones for rapid distribution.</p>
+      </div>
+    </div>
+    <div class="action-item" id="action-monitor">
+      <div class="a-icon">📡</div>
+      <div>
+        <h5>Continuous Monitoring</h5>
+        <p>Re-run flood prediction every 2–4 hours as conditions evolve. Track river gauges and weather stations for real-time updates.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     INPUT PARAMETERS SUMMARY
+════════════════════════════════════════════════ -->
+<div class="card" role="region" aria-label="Input Data Used for Prediction">
+  <div class="card-title">
+    <div class="icon">📊</div>
+    Input Meteorological Data
+    <span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted);font-weight:400;">
+      Parameters submitted for this assessment
+    </span>
+  </div>
+
+  <div class="input-summary">
+    {% for feature, value in inputs.items() %}
+    {% set label, unit = labels[feature] %}
+    <div class="summary-item flood-highlight">
+      <div class="s-label">{{ label }}</div>
+      <div class="s-value">
+        {{ value }}
+        <span class="s-unit">{{ unit }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     ACTION BUTTONS
+════════════════════════════════════════════════ -->
+<div class="result-actions">
+  <a href="{{ url_for('predict') }}" class="btn btn-danger" id="new-assessment-btn">
+    🔍 New Assessment
+  </a>
+  <a href="{{ url_for('history') }}" class="btn btn-outline" id="view-log-btn">
+    📋 View Prediction Log
+  </a>
+  <a href="{{ url_for('home') }}" class="btn btn-outline" id="back-dashboard-flood-btn">
+    🏠 Dashboard
+  </a>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     PAGE-SPECIFIC STYLES
+════════════════════════════════════════════════ -->
+<style>
+/* Warning rings animation */
+.warning-rings {
+  position: relative;
+  width: 80px; height: 80px;
+  margin: 0 auto 1.5rem;
+}
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--danger);
+  opacity: 0;
+  animation: warningRing 2s ease-out infinite;
+}
+.ring-1 { animation-delay: 0s; }
+.ring-2 { animation-delay: 0.6s; }
+.ring-3 { animation-delay: 1.2s; }
+@keyframes warningRing {
+  0%   { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.warning-core {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  animation: float 2s ease-in-out infinite;
+}
+
+/* Alert level */
+.alert-level-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.25rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+.alert-badge {
+  text-align: center;
+  padding: 1.25rem 1.75rem;
+  border-radius: 14px;
+  min-width: 130px;
+}
+.alert-badge.critical {
+  background: rgba(255,59,59,0.15);
+  border: 2px solid rgba(255,59,59,0.5);
+  box-shadow: 0 0 30px rgba(255,59,59,0.2);
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+.alert-badge.high {
+  background: rgba(255,150,0,0.12);
+  border: 2px solid rgba(255,150,0,0.4);
+}
+.alert-badge.moderate {
+  background: rgba(255,220,0,0.10);
+  border: 2px solid rgba(255,220,0,0.3);
+}
+.al-icon { font-size: 1.8rem; margin-bottom: 0.3rem; }
+.al-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.2rem;
+}
+.al-desc { font-size: 0.72rem; color: var(--text-muted); }
+
+.alert-info p {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* Flood-tinted summary items */
+.summary-item.flood-highlight {
+  border-color: rgba(255, 59, 59, 0.15);
+}
+.summary-item.flood-highlight:hover {
+  border-color: rgba(255, 59, 59, 0.4);
+  background: rgba(255, 59, 59, 0.05);
+}
+
+/* Confidence arc sizing */
+.confidence-arc {
+  width: 140px; height: 140px;
+  margin: 1.5rem auto 0;
+  position: relative;
+}
+.confidence-arc svg { transform: rotate(-90deg); }
+.confidence-arc .track {
+  fill: none;
+  stroke: rgba(255,255,255,0.08);
+  stroke-width: 10;
+}
+.confidence-arc .fill {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+.confidence-arc.flood .fill {
+  stroke: var(--danger);
+  filter: drop-shadow(0 0 8px var(--danger));
+}
+.arc-label {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.arc-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--danger-glow);
+}
+.arc-text {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 600px) {
+  .alert-level-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+{% endblock %}

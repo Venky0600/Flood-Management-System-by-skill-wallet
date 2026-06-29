@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Prediction History — Rising Waters{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div class="eyebrow">Audit Trail</div>
+  <h1>Prediction History</h1>
+</div>
+
+<div class="card" role="main">
+  <div class="card-title">
+    <div class="icon">📋</div>
+    All Past Predictions
+    {% if records %}
+    <span style="margin-left:auto; font-family:'Orbitron',sans-serif; font-size:0.78rem;
+                 color:var(--teal); font-weight:700;">
+      {{ records|length }} records
+    </span>
+    {% endif %}
+  </div>
+
+  {% if records|length == 0 %}
+  <!-- ── Empty State ── -->
+  <div class="empty-state">
+    <div class="empty-icon">📭</div>
+    <h3>No Predictions Yet</h3>
+    <p>Run your first flood risk assessment to see results logged here.</p>
+    <a href="{{ url_for('predict') }}" class="btn" id="empty-predict-btn">
+      🔍 Make a Prediction →
+    </a>
+  </div>
+
+  {% else %}
+  <!-- ── Stats Summary ── -->
+  {% set flood_count = records | selectattr('prediction', 'equalto', 'Flood') | list | length %}
+  {% set safe_count  = records | length - flood_count %}
+
+  <div class="stats-grid" style="margin-bottom:1.5rem;">
+    <div class="stat-card info">
+      <div class="stat-icon">📊</div>
+      <div class="stat-value">{{ records|length }}</div>
+      <div class="stat-label">Total Records</div>
+    </div>
+    <div class="stat-card danger">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-value">{{ flood_count }}</div>
+      <div class="stat-label">Flood Alerts</div>
+    </div>
+    <div class="stat-card success">
+      <div class="stat-icon">✅</div>
+      <div class="stat-value">{{ safe_count }}</div>
+      <div class="stat-label">Safe Readings</div>
+    </div>
+  </div>
+
+  <!-- ── Data Table ── -->
+  <div class="table-wrap" role="region" aria-label="Prediction Log Table">
+    <table id="history-table" aria-label="Flood Prediction History">
+      <thead>
+        <tr>
+          <th scope="col">🕐 Timestamp</th>
+          <th scope="col">🌧️ Annual RF</th>
+          <th scope="col">🌦️ Seasonal RF</th>
+          <th scope="col">☁️ Visibility</th>
+          <th scope="col">💧 Humidity</th>
+          <th scope="col">🌡️ Temp</th>
+          <th scope="col">🏞️ River Lvl</th>
+          <th scope="col">🎯 Result</th>
+          <th scope="col">📈 Confidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+        <tr id="row-{{ loop.index }}">
+          <td style="color:var(--text-muted); font-size:0.8rem;">{{ r.timestamp }}</td>
+          <td>{{ r.annual_rainfall }} <span style="color:var(--text-muted);font-size:0.7rem;">mm</span></td>
+          <td>{{ r.seasonal_rainfall }} <span style="color:var(--text-muted);font-size:0.7rem;">mm</span></td>
+          <td>{{ r.cloud_visibility }} <span style="color:var(--text-muted);font-size:0.7rem;">km</span></td>
+          <td>{{ r.humidity }} <span style="color:var(--text-muted);font-size:0.7rem;">%</span></td>
+          <td>{{ r.temperature }} <span style="color:var(--text-muted);font-size:0.7rem;">°C</span></td>
+          <td>{{ r.river_level }} <span style="color:var(--text-muted);font-size:0.7rem;">m</span></td>
+          <td>
+            <span class="tag {{ 'flood' if r.prediction == 'Flood' else 'no-flood' }}"
+                  aria-label="Prediction: {{ r.prediction }}">
+              {{ r.prediction }}
+            </span>
+          </td>
+          <td>
+            <span style="font-family:'Orbitron',sans-serif; font-size:0.82rem; font-weight:700;
+                         color: {{ 'var(--danger-glow)' if r.prediction == 'Flood' else 'var(--safe)' }};">
+              {{ r.probability }}%
+            </span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div><!-- /table-wrap -->
+
+  <div style="margin-top:1.25rem; display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;">
+    <a href="{{ url_for('predict') }}" class="btn btn-sm" id="history-new-predict-btn">
+      🔍 New Prediction
+    </a>
+    <span style="color:var(--text-muted); font-size:0.78rem;">
+      Predictions logged automatically. Most recent first.
+    </span>
+  </div>
+
+  {% endif %}
+</div>
+
+{% endblock %}

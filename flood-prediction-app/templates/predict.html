@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+{% block title %}Predict Flood Risk — Rising Waters{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div class="eyebrow">ML Prediction Engine</div>
+  <h1>Flood Risk Assessment</h1>
+</div>
+
+<div class="predict-layout">
+
+  <!-- ── LEFT: Input Form ── -->
+  <div>
+    <div class="card" role="main">
+      <div class="card-title">
+        <div class="icon">📡</div>
+        Weather Parameter Input
+      </div>
+      <p class="text-muted" style="font-size:0.85rem; margin-bottom:1.5rem;">
+        Enter current meteorological and hydrological readings. All six parameters are
+        required for an accurate prediction.
+      </p>
+
+      {% if error %}
+      <div class="alert-error" role="alert" id="form-error">
+        ⚠️ {{ error }}
+      </div>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('predict') }}" id="predict-form" novalidate>
+
+        <div class="form-grid">
+
+          <!-- Annual Rainfall -->
+          <div class="form-group">
+            <label for="annual_rainfall">
+              🌧️ Annual Rainfall
+              <span class="unit-badge">mm</span>
+            </label>
+            <input
+              type="number" step="any" id="annual_rainfall" name="annual_rainfall"
+              value="{{ form_values['annual_rainfall'] if form_values else '' }}"
+              placeholder="e.g. 1500"
+              min="0" max="5000" required
+              aria-describedby="annual_rainfall_hint"
+            >
+            <span class="input-hint" id="annual_rainfall_hint">Typical range: 500 – 3000 mm/year</span>
+          </div>
+
+          <!-- Seasonal Rainfall -->
+          <div class="form-group">
+            <label for="seasonal_rainfall">
+              🌦️ Seasonal Rainfall
+              <span class="unit-badge">mm</span>
+            </label>
+            <input
+              type="number" step="any" id="seasonal_rainfall" name="seasonal_rainfall"
+              value="{{ form_values['seasonal_rainfall'] if form_values else '' }}"
+              placeholder="e.g. 850"
+              min="0" max="3000" required
+              aria-describedby="seasonal_rainfall_hint"
+            >
+            <span class="input-hint" id="seasonal_rainfall_hint">Monsoon / rainy season total</span>
+          </div>
+
+          <!-- Cloud Visibility -->
+          <div class="form-group">
+            <label for="cloud_visibility">
+              ☁️ Cloud Visibility
+              <span class="unit-badge">km</span>
+            </label>
+            <input
+              type="number" step="any" id="cloud_visibility" name="cloud_visibility"
+              value="{{ form_values['cloud_visibility'] if form_values else '' }}"
+              placeholder="e.g. 4.5"
+              min="0" max="30" required
+              aria-describedby="cloud_visibility_hint"
+            >
+            <span class="input-hint" id="cloud_visibility_hint">Lower = heavier cloud cover</span>
+          </div>
+
+          <!-- Humidity -->
+          <div class="form-group">
+            <label for="humidity">
+              💧 Humidity
+              <span class="unit-badge">%</span>
+            </label>
+            <input
+              type="number" step="any" id="humidity" name="humidity"
+              value="{{ form_values['humidity'] if form_values else '' }}"
+              placeholder="e.g. 80"
+              min="0" max="100" required
+              aria-describedby="humidity_hint"
+            >
+            <span class="input-hint" id="humidity_hint">Relative humidity percentage</span>
+          </div>
+
+          <!-- Temperature -->
+          <div class="form-group">
+            <label for="temperature">
+              🌡️ Temperature
+              <span class="unit-badge">°C</span>
+            </label>
+            <input
+              type="number" step="any" id="temperature" name="temperature"
+              value="{{ form_values['temperature'] if form_values else '' }}"
+              placeholder="e.g. 29"
+              min="-20" max="55" required
+              aria-describedby="temperature_hint"
+            >
+            <span class="input-hint" id="temperature_hint">Current ambient air temperature</span>
+          </div>
+
+          <!-- River Level -->
+          <div class="form-group">
+            <label for="river_level">
+              🏞️ River Level
+              <span class="unit-badge">m</span>
+            </label>
+            <input
+              type="number" step="any" id="river_level" name="river_level"
+              value="{{ form_values['river_level'] if form_values else '' }}"
+              placeholder="e.g. 6.2"
+              min="0" max="30" required
+              aria-describedby="river_level_hint"
+            >
+            <span class="input-hint" id="river_level_hint">Water level above baseline</span>
+          </div>
+
+        </div><!-- /form-grid -->
+
+        <button type="submit" class="btn" id="submit-predict-btn"
+                style="width:100%; justify-content:center; padding:1rem; font-size:1rem;">
+          ⚡ Generate Flood Risk Prediction
+        </button>
+
+      </form>
+    </div><!-- /card -->
+
+    <!-- Prefill quick examples -->
+    <div class="card" style="padding:1.25rem 1.5rem;">
+      <div class="card-title" style="margin-bottom:0.75rem; font-size:0.85rem;">
+        <div class="icon" style="width:26px;height:26px;font-size:0.8rem;">💡</div>
+        Quick Test Values
+      </div>
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" id="fill-flood-example" onclick="fillExample('flood')">
+          ⚠️ High Risk Scenario
+        </button>
+        <button class="btn btn-outline btn-sm" id="fill-safe-example" onclick="fillExample('safe')">
+          ✅ Low Risk Scenario
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- ── RIGHT: Field Guide ── -->
+  <div>
+    <div class="card field-guide" role="complementary" aria-label="Field Guide">
+      <div class="card-title">
+        <div class="icon">📖</div>
+        Parameter Guide
+      </div>
+
+      <div class="guide-item">
+        <div class="guide-icon">🌧️</div>
+        <div class="guide-text">
+          <div class="guide-label">Annual Rainfall</div>
+          <div class="guide-desc">Total precipitation recorded over the past 12 months. High annual totals saturate soil, reducing absorption capacity.</div>
+        </div>
+      </div>
+
+      <div class="guide-item">
+        <div class="guide-icon">🌦️</div>
+        <div class="guide-text">
+          <div class="guide-label">Seasonal Rainfall</div>
+          <div class="guide-desc">Rainfall during the current monsoon or rainy season. A key indicator of short-term flood potential.</div>
+        </div>
+      </div>
+
+      <div class="guide-item">
+        <div class="guide-icon">☁️</div>
+        <div class="guide-text">
+          <div class="guide-label">Cloud Visibility</div>
+          <div class="guide-desc">Visibility distance under cloud cover in km. Very low values indicate dense storm clouds and imminent heavy rainfall.</div>
+        </div>
+      </div>
+
+      <div class="guide-item">
+        <div class="guide-icon">💧</div>
+        <div class="guide-text">
+          <div class="guide-label">Humidity</div>
+          <div class="guide-desc">Relative humidity percentage. High humidity (>85%) combined with other factors strongly indicates flood conditions.</div>
+        </div>
+      </div>
+
+      <div class="guide-item">
+        <div class="guide-icon">🌡️</div>
+        <div class="guide-text">
+          <div class="guide-label">Temperature</div>
+          <div class="guide-desc">Ambient air temperature (°C). Combined with rainfall data it helps calibrate evaporation and runoff patterns.</div>
+        </div>
+      </div>
+
+      <div class="guide-item">
+        <div class="guide-icon">🏞️</div>
+        <div class="guide-text">
+          <div class="guide-label">River Level</div>
+          <div class="guide-desc">Current water level relative to the standard baseline (metres). Elevated river levels are the most direct flood indicator.</div>
+        </div>
+      </div>
+    </div><!-- /field-guide -->
+
+    <div class="card" style="background: rgba(255,171,0,0.05); border-color: rgba(255,171,0,0.25); padding:1.25rem 1.5rem;">
+      <div style="display:flex; gap:0.75rem; align-items:flex-start;">
+        <div style="font-size:1.4rem;">⚡</div>
+        <div>
+          <div style="font-size:0.83rem; font-weight:700; color:var(--warn); margin-bottom:0.3rem;">Model Info</div>
+          <div style="font-size:0.78rem; color:var(--text-muted); line-height:1.6;">
+            Algorithm: <strong style="color:white;">Random Forest</strong><br>
+            Accuracy: <strong style="color:white;">82.0%</strong> on held-out test data<br>
+            Features: <strong style="color:white;">6 meteorological parameters</strong><br>
+            Scaler: <strong style="color:white;">StandardScaler (Z-score)</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /right -->
+</div><!-- /predict-layout -->
+
+<script>
+function fillExample(type) {
+  const flood = {
+    annual_rainfall: 2800, seasonal_rainfall: 1800,
+    cloud_visibility: 1.2, humidity: 92,
+    temperature: 26, river_level: 11.5
+  };
+  const safe = {
+    annual_rainfall: 900, seasonal_rainfall: 320,
+    cloud_visibility: 8.5, humidity: 55,
+    temperature: 32, river_level: 2.1
+  };
+  const vals = type === 'flood' ? flood : safe;
+  Object.entries(vals).forEach(([k, v]) => {
+    const el = document.getElementById(k);
+    if (el) el.value = v;
+  });
+}
+</script>
+
+{% endblock %}

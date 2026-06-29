@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% block title %}About the Project — Rising Waters{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div class="eyebrow">Project Overview</div>
+  <h1>About Rising Waters</h1>
+</div>
+
+<!-- ── Mission ── -->
+<div class="card" role="region" aria-label="Mission Statement">
+  <div class="card-title">
+    <div class="icon">🌊</div>
+    Mission Statement
+  </div>
+  <p style="color:var(--text-muted); font-size:0.92rem; line-height:1.8; max-width:700px;">
+    Floods are among the most devastating natural disasters, claiming thousands of lives
+    and displacing millions every year. Despite their recurring nature, the lack of timely
+    and accurate early-warning systems continues to amplify their destructive impact.
+    <strong style="color:white;">Rising Waters</strong> addresses that gap by building a
+    machine learning-powered flood prediction system trained on historical weather data to
+    provide timely, accurate early warnings — enabling communities and authorities to
+    prepare and respond before disaster strikes.
+  </p>
+
+  <div class="divider"></div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-top:0.25rem;">
+    <div style="text-align:center; padding:1rem;">
+      <div style="font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:800;color:var(--teal);">{{ metadata.best_accuracy }}%</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;">XGBoost Accuracy</div>
+    </div>
+    <div style="text-align:center; padding:1rem;">
+      <div style="font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:800;color:white;">4</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;">ML Algorithms Compared</div>
+    </div>
+    <div style="text-align:center; padding:1rem;">
+      <div style="font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:800;color:white;">6</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;">Meteorological Features</div>
+    </div>
+    <div style="text-align:center; padding:1rem;">
+      <div style="font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:800;color:var(--safe);">Live</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;">IBM Cloud Ready</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Model Comparison ── -->
+<div class="card" role="region" aria-label="Model Comparison">
+  <div class="card-title">
+    <div class="icon">🤖</div>
+    Model Comparison &amp; Selection
+  </div>
+  <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1.25rem;">
+    Four classification algorithms were trained, validated and compared on the Flood
+    Prediction Dataset. The winner is deployed in this application.
+  </p>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem;">
+    {% for name, acc in metadata.all_results.items() %}
+    <div class="stat-card {{ 'info' if name == metadata.best_model else '' }}"
+         style="{{ 'border-color:rgba(0,212,255,0.4); box-shadow:0 0 20px rgba(0,212,255,0.15);' if name == metadata.best_model else '' }}">
+      {% if name == metadata.best_model %}
+      <div style="font-size:0.65rem;font-weight:700;color:var(--warn);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem;">
+        ★ DEPLOYED MODEL
+      </div>
+      {% endif %}
+      <div class="stat-icon">
+        {{ '🌳' if name == 'Random Forest' else ('🌲' if name == 'Decision Tree' else ('🔵' if name == 'KNN' else '⚡')) }}
+      </div>
+      <div class="stat-value" style="font-size:1.8rem;">{{ acc }}%</div>
+      <div class="stat-label">{{ name }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div style="margin-top:1.25rem; background:rgba(0,212,255,0.06); border:1px solid rgba(0,212,255,0.2); border-radius:10px; padding:1rem 1.25rem;">
+    <div style="font-size:0.82rem; color:var(--text-muted); line-height:1.7;">
+      <strong style="color:var(--teal);">Deployed Model: XGBoost (96.55% accuracy)</strong> —
+      Selected based on highest test-set accuracy after 80/20 train-test split with
+      stratified sampling. Features were scaled using
+      <strong style="color:white;">StandardScaler</strong> (Z-score normalisation).
+      Outliers handled via <strong style="color:white;">IQR capping</strong>.
+      Missing values imputed using <strong style="color:white;">column mean</strong>.
+      Model and scaler saved as <code style="color:var(--teal);">floods.save</code> and
+      <code style="color:var(--teal);">scaler.save</code> using <strong style="color:white;">joblib</strong>.
+    </div>
+  </div>
+</div>
+
+<!-- ── System Architecture ── -->
+<div class="card" role="region" aria-label="System Architecture">
+  <div class="card-title">
+    <div class="icon">🏗️</div>
+    System Architecture
+  </div>
+  <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:1.25rem;">
+    The application is built in a layered architecture as shown in the project specification.
+  </p>
+
+  <div class="arch-grid">
+    <div class="arch-layer">
+      <div class="layer-icon">👤</div>
+      <h4>User Layer</h4>
+      <p>Web browser interface — HTML, CSS, JavaScript for interactivity.</p>
+    </div>
+    <div class="arch-layer">
+      <div class="layer-icon">🖥️</div>
+      <h4>Presentation Layer</h4>
+      <p>Jinja2 templates: Home, Predict, Result, History pages.</p>
+    </div>
+    <div class="arch-layer">
+      <div class="layer-icon">⚙️</div>
+      <h4>Application Layer</h4>
+      <p>Flask routing, form validation, preprocessing, prediction pipeline.</p>
+    </div>
+    <div class="arch-layer">
+      <div class="layer-icon">🤖</div>
+      <h4>ML Layer</h4>
+      <p>Trained model (floods.save) + StandardScaler (scaler.save) via joblib.</p>
+    </div>
+    <div class="arch-layer">
+      <div class="layer-icon">🗄️</div>
+      <h4>Data Layer</h4>
+      <p>Flood prediction dataset, feature engineering, train/test pipeline.</p>
+    </div>
+    <div class="arch-layer">
+      <div class="layer-icon">☁️</div>
+      <h4>Deployment Layer</h4>
+      <p>Git → GitHub → IBM Cloud → Live application with public access.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── Use Cases ── -->
+<div class="card" role="region" aria-label="Use Cases">
+  <div class="card-title">
+    <div class="icon">🎯</div>
+    Use Case Scenarios
+  </div>
+
+  <div class="use-case-list">
+    <div class="use-case">
+      <div class="uc-icon">🚨</div>
+      <div>
+        <h4>Scenario 1: Early Flood Warning &amp; Evacuation Planning</h4>
+        <p>A meteorologist enters current rainfall and cloud visibility readings for a flood-prone district.
+        The model analyses the inputs and predicts a high probability of flooding, allowing authorities
+        to issue evacuation advisories several hours in advance.</p>
+      </div>
+    </div>
+
+    <div class="use-case">
+      <div class="uc-icon">🏗️</div>
+      <div>
+        <h4>Scenario 2: Disaster Response &amp; Resource Allocation</h4>
+        <p>A disaster relief coordinator uses the web application during monsoon season to monitor multiple
+        regions simultaneously. By entering regional weather data for each area, the system provides
+        instant flood risk classifications, helping prioritise resource deployment.</p>
+      </div>
+    </div>
+
+    <div class="use-case">
+      <div class="uc-icon">📊</div>
+      <div>
+        <h4>Scenario 3: Model Validation &amp; Performance Assessment</h4>
+        <p>A government analyst tests the model against historical flood event data to evaluate its accuracy.
+        The XGBoost model achieves <strong style="color:var(--teal);">96.55% accuracy</strong> on test data,
+        confirming the system's reliability for operational use.</p>
+      </div>
+    </div>
+
+    <div class="use-case">
+      <div class="uc-icon">🏛️</div>
+      <div>
+        <h4>Government &amp; Policy Planning</h4>
+        <p>Authorities use flood risk assessments to plan infrastructure investment — building flood barriers,
+        improving drainage systems, and designating evacuation routes in high-risk zones.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Tech Stack ── -->
+<div class="card" role="region" aria-label="Technology Stack">
+  <div class="card-title">
+    <div class="icon">🛠️</div>
+    Technology Stack
+  </div>
+  <div class="feature-tags">
+    <span class="feature-tag">🐍 Python 3</span>
+    <span class="feature-tag">🌶️ Flask</span>
+    <span class="feature-tag">🌳 Scikit-learn</span>
+    <span class="feature-tag">⚡ XGBoost</span>
+    <span class="feature-tag">🐼 Pandas</span>
+    <span class="feature-tag">🔢 NumPy</span>
+    <span class="feature-tag">💾 Joblib</span>
+    <span class="feature-tag">🎨 Jinja2</span>
+    <span class="feature-tag">☁️ IBM Cloud</span>
+    <span class="feature-tag">🐳 Docker</span>
+    <span class="feature-tag">📦 GitHub</span>
+  </div>
+</div>
+
+{% endblock %}

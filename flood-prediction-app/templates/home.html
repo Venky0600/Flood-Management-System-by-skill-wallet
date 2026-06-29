@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Rising Waters Flood Prediction System{% endblock %}
+{% block content %}
+
+<!-- ── HERO ── -->
+<section class="hero" aria-label="System Overview">
+  <div class="alert-chip">
+    <span class="alert-dot"></span>
+    System Online — ML Model Active
+  </div>
+
+  <h1>
+    <span class="gradient-text">Rising Waters</span><br>
+    Flood Prediction System
+  </h1>
+
+  <p class="subtitle">
+    An AI-powered early warning system using Machine Learning to predict flood risks
+    from meteorological data — protecting communities before disaster strikes.
+  </p>
+
+  <div class="hero-actions">
+    <a href="{{ url_for('predict') }}" class="btn" id="hero-predict-btn">
+      🔍 Run Prediction
+    </a>
+    <a href="{{ url_for('about') }}" class="btn btn-outline" id="hero-about-btn">
+      Learn More →
+    </a>
+  </div>
+</section>
+
+<!-- ── SYSTEM ACTIVITY ── -->
+<div class="page-header">
+  <div class="eyebrow">System Activity</div>
+  <h1>Live Dashboard</h1>
+</div>
+
+<div class="stats-grid" role="region" aria-label="Prediction Statistics">
+  <div class="stat-card info" style="--glow-color: rgba(0,212,255,0.18);">
+    <div class="stat-icon">📊</div>
+    <div class="stat-value" id="stat-total">{{ stats.total }}</div>
+    <div class="stat-label">Total Predictions</div>
+  </div>
+
+  <div class="stat-card danger" style="--glow-color: rgba(255,59,59,0.18);">
+    <div class="stat-icon">⚠️</div>
+    <div class="stat-value" id="stat-flood">{{ stats.flood }}</div>
+    <div class="stat-label">Flood Alerts Raised</div>
+  </div>
+
+  <div class="stat-card success" style="--glow-color: rgba(0,230,118,0.18);">
+    <div class="stat-icon">✅</div>
+    <div class="stat-value" id="stat-safe">{{ stats.no_flood }}</div>
+    <div class="stat-label">Safe Assessments</div>
+  </div>
+
+  <div class="stat-card warn" style="--glow-color: rgba(255,171,0,0.18);">
+    <div class="stat-icon">🎯</div>
+    <div class="stat-value">{{ metadata.best_accuracy }}%</div>
+    <div class="stat-label">Model Accuracy</div>
+  </div>
+</div>
+
+<!-- ── MODEL PERFORMANCE ── -->
+<div class="card" role="region" aria-label="Model Performance">
+  <div class="card-title">
+    <div class="icon">🤖</div>
+    ML Model Performance Comparison
+  </div>
+
+  <p class="text-muted" style="font-size:0.85rem; margin-bottom:1.25rem;">
+    Four classifiers were trained and evaluated on the Flood Prediction Dataset.
+    The best-performing model —
+    <strong style="color:var(--teal);">{{ metadata.best_model }}</strong>
+    — achieves <strong style="color:white;">{{ metadata.best_accuracy }}%</strong> test accuracy
+    and is saved as <code style="color:var(--teal); background:rgba(0,212,255,0.1); padding:0.1rem 0.4rem; border-radius:4px;">floods.save</code>
+    for deployment in this Flask application.
+  </p>
+
+  <div class="model-compare" role="list">
+    {% for name, acc in metadata.all_results.items() %}
+    <div class="model-row" role="listitem">
+      <div class="model-name {{ 'best' if name == metadata.best_model else '' }}">
+        {{ name }}
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-fill {{ 'best' if name == metadata.best_model else ('good' if acc >= 81 else 'ok') }}"
+             style="--fill-width: {{ acc }}%;"
+             aria-label="{{ name }} accuracy {{ acc }}%">
+        </div>
+      </div>
+      <div class="bar-pct">{{ acc }}%</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="feature-tags" style="margin-top:1.5rem;">
+    <span class="feature-tag">📐 Annual Rainfall</span>
+    <span class="feature-tag">🌧️ Seasonal Rainfall</span>
+    <span class="feature-tag">☁️ Cloud Visibility</span>
+    <span class="feature-tag">💧 Humidity</span>
+    <span class="feature-tag">🌡️ Temperature</span>
+    <span class="feature-tag">🏞️ River Level</span>
+  </div>
+</div>
+
+<!-- ── HOW IT WORKS ── -->
+<div class="card" role="region" aria-label="How It Works">
+  <div class="card-title">
+    <div class="icon">⚙️</div>
+    How It Works
+  </div>
+
+  <div class="steps-grid">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <h4>Enter Readings</h4>
+      <p>Input current annual rainfall, seasonal rainfall, cloud visibility, humidity, temperature and river level.</p>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <h4>Data Preprocessing</h4>
+      <p>Inputs are validated, missing values handled, and scaled using StandardScaler before prediction.</p>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <h4>XGBoost Prediction</h4>
+      <p>The trained XGBoost classifier (96.55% accuracy) generates a flood / no-flood classification instantly.</p>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <h4>Result &amp; Alert</h4>
+      <p>You receive a dedicated Flood Chance or No Flood Chance result page with recommended emergency actions.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── QUICK ACTION ── -->
+<div style="text-align:center; padding: 1rem 0 2rem;">
+  <a href="{{ url_for('predict') }}" class="btn" id="dashboard-predict-cta"
+     style="padding: 1rem 2.5rem; font-size:1rem;">
+    🚀 Run a Flood Risk Assessment →
+  </a>
+</div>
+
+{% endblock %}

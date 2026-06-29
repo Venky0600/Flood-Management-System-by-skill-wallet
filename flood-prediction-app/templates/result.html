@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}{% if flood %}⚠️ FLOOD RISK DETECTED{% else %}✅ No Flood Risk{% endif %} — Rising Waters{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div class="eyebrow">Prediction Result</div>
+  <h1>Risk Assessment Complete</h1>
+</div>
+
+<!-- ── RESULT BANNER ── -->
+{% if flood %}
+<div class="result-banner flood" role="alert" aria-live="assertive" id="result-banner">
+  <span class="result-emoji">⚠️</span>
+  <h1>FLOOD RISK DETECTED</h1>
+  <div class="prob-display">
+    <span>Model Confidence:</span>
+    <span class="prob-value" id="prob-display">{{ probability }}%</span>
+    <span>probability of flooding</span>
+  </div>
+
+  <!-- SVG Confidence Arc -->
+  <div class="confidence-arc flood" style="margin-top:1.5rem;">
+    <svg viewBox="0 0 120 120" width="120" height="120">
+      <circle class="track" cx="60" cy="60" r="52"/>
+      <circle class="fill"
+        cx="60" cy="60" r="52"
+        stroke-dasharray="{{ (probability / 100 * 326.7) | round(1) }} 326.7"
+        stroke-dashoffset="0"/>
+    </svg>
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+      <div style="font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--danger-glow);">{{ probability }}%</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:0.05em;">RISK</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FLOOD RECOMMENDED ACTIONS ── -->
+<div class="card" role="region" aria-label="Recommended Actions">
+  <div class="card-title">
+    <div class="icon">🚨</div>
+    Recommended Response Actions
+  </div>
+  <div class="actions-grid">
+    <div class="action-item">
+      <div class="a-icon">🚨</div>
+      <div>
+        <h5>Issue Alert</h5>
+        <p>Activate emergency broadcast to residents in flood-prone zones immediately.</p>
+      </div>
+    </div>
+    <div class="action-item">
+      <div class="a-icon">🚁</div>
+      <div>
+        <h5>Mobilise Response</h5>
+        <p>Deploy disaster response teams and emergency services to at-risk areas.</p>
+      </div>
+    </div>
+    <div class="action-item">
+      <div class="a-icon">🏠</div>
+      <div>
+        <h5>Evacuation Advisory</h5>
+        <p>Advise residents in low-lying areas to evacuate to higher ground immediately.</p>
+      </div>
+    </div>
+    <div class="action-item">
+      <div class="a-icon">🏗️</div>
+      <div>
+        <h5>Infrastructure</h5>
+        <p>Check and close flood gates. Prioritise pumping stations and drainage systems.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% else %}
+
+<div class="result-banner no-flood" role="status" aria-live="polite" id="result-banner">
+  <span class="result-emoji">✅</span>
+  <h1>NO FLOOD RISK</h1>
+  <div class="prob-display">
+    <span>Model Confidence:</span>
+    <span class="prob-value" id="prob-display">{{ 100 - probability }}%</span>
+    <span>probability of no flooding</span>
+  </div>
+
+  <!-- SVG Confidence Arc -->
+  <div class="confidence-arc no-flood" style="margin-top:1.5rem; position:relative;">
+    <svg viewBox="0 0 120 120" width="120" height="120">
+      <circle class="track" cx="60" cy="60" r="52"/>
+      <circle class="fill"
+        cx="60" cy="60" r="52"
+        stroke-dasharray="{{ ((100 - probability) / 100 * 326.7) | round(1) }} 326.7"
+        stroke-dashoffset="0"/>
+    </svg>
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+      <div style="font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--safe);">{{ 100 - probability }}%</div>
+      <div style="font-size:0.62rem;color:var(--text-muted);letter-spacing:0.05em;">SAFE</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SAFE RECOMMENDED ACTIONS ── -->
+<div class="card" role="region" aria-label="Recommended Actions">
+  <div class="card-title">
+    <div class="icon">📋</div>
+    Recommended Monitoring Actions
+  </div>
+  <div class="actions-grid">
+    <div class="action-item safe">
+      <div class="a-icon" style="background:rgba(0,230,118,0.12);">📡</div>
+      <div>
+        <h5>Continue Monitoring</h5>
+        <p>Maintain routine observation of rainfall, river levels and weather forecasts.</p>
+      </div>
+    </div>
+    <div class="action-item safe">
+      <div class="a-icon" style="background:rgba(0,230,118,0.12);">📈</div>
+      <div>
+        <h5>Watch for Trends</h5>
+        <p>Flag any rapid increases in river level or rainfall for follow-up prediction.</p>
+      </div>
+    </div>
+    <div class="action-item safe">
+      <div class="a-icon" style="background:rgba(0,230,118,0.12);">✅</div>
+      <div>
+        <h5>System Check</h5>
+        <p>Confirm all flood barriers, pumping stations and drainage systems are operational.</p>
+      </div>
+    </div>
+    <div class="action-item safe">
+      <div class="a-icon" style="background:rgba(0,230,118,0.12);">🗓️</div>
+      <div>
+        <h5>Schedule Re-Assessment</h5>
+        <p>Re-run prediction every 6–12 hours during active weather events.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- ── INPUT SUMMARY ── -->
+<div class="card" role="region" aria-label="Input Parameters">
+  <div class="card-title">
+    <div class="icon">📊</div>
+    Input Parameters Summary
+  </div>
+  <div class="input-summary">
+    {% for feature, value in inputs.items() %}
+    {% set label, unit = labels[feature] %}
+    <div class="summary-item">
+      <div class="s-label">{{ label }}</div>
+      <div class="s-value">{{ value }} <span class="s-unit">{{ unit }}</span></div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ── ACTION BUTTONS ── -->
+<div class="result-actions">
+  <a href="{{ url_for('predict') }}" class="btn" id="new-prediction-btn">
+    🔍 New Prediction
+  </a>
+  <a href="{{ url_for('history') }}" class="btn btn-outline" id="view-history-btn">
+    📋 View History
+  </a>
+  <a href="{{ url_for('home') }}" class="btn btn-outline" id="back-dashboard-btn">
+    🏠 Dashboard
+  </a>
+</div>
+
+{% endblock %}
