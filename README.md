@@ -450,32 +450,19 @@ rising-waters-flood-prediction/
 
 ## ☁️ Deployment
 
-### Render Deployment (Fastest)
+### Render Deployment (Fastest & Recommended)
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
 
 1. Connect your GitHub repository to Render.
 2. Select **Web Service**.
-3. Render will automatically detect the `render.yaml` configuration in the root directory.
+3. Render will automatically detect the `Dockerfile` and `render.yaml` configuration in the root directory.
 4. Click **Create Web Service**. Your application will be live in minutes!
 
-Alternatively, configure it manually:
-- **Root Directory:** `flood-prediction-app`
+Alternatively, if you configure it manually as a Python environment:
+- **Root Directory:** `.` (leave blank or set to root)
 - **Build Command:** `pip install -r requirements.txt`
 - **Start Command:** `gunicorn app:app`
-
-### IBM Cloud Deployment
-
-```bash
-# 1. Login to IBM Cloud
-ibmcloud login
-
-# 2. Push application
-ibmcloud cf push rising-waters
-
-# Application will be live at:
-# https://rising-waters.<region>.cf.appdomain.cloud
-```
 
 ### Docker Deployment
 
