@@ -1,18 +1,1 @@
-{
-  "feature_names": [
-    "annual_rainfall",
-    "seasonal_rainfall",
-    "cloud_visibility",
-    "humidity",
-    "temperature",
-    "river_level"
-  ],
-  "best_model": "XGBoost",
-  "best_accuracy": 96.55,
-  "all_results": {
-    "Decision Tree": 78.17,
-    "Random Forest": 82.0,
-    "KNN": 80.67,
-    "XGBoost": 96.55
-  }
-}
+{"accuracy": 95.65, "features": ["Temp", "Humidity", "Cloud Cover", "ANNUAL", "Jan-Feb", "Mar-May", "Jun-Sep", "Oct-Dec", "avgjune", "sub"], "model_name": "Random Forest", "all_results": {"Decision Tree": 95.65, "Random Forest": 95.65, "KNN": 82.61, "XGBoost": 86.96}}

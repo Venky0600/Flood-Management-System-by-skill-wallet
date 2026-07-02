@@ -54,17 +54,19 @@
   </div>
 
   <!-- ── Data Table ── -->
-  <div class="table-wrap" role="region" aria-label="Prediction Log Table">
+  <div class="table-wrap" role="region" aria-label="Prediction Log Table" style="overflow-x: auto;">
     <table id="history-table" aria-label="Flood Prediction History">
       <thead>
         <tr>
           <th scope="col">🕐 Timestamp</th>
-          <th scope="col">🌧️ Annual RF</th>
-          <th scope="col">🌦️ Seasonal RF</th>
-          <th scope="col">☁️ Visibility</th>
-          <th scope="col">💧 Humidity</th>
-          <th scope="col">🌡️ Temp</th>
-          <th scope="col">🏞️ River Lvl</th>
+          {% for feature_key, feature_tuple in labels.items() %}
+          <th scope="col">
+            {{ feature_tuple[0] }}
+            {% if feature_tuple[1] %}
+            <br><span style="font-size:0.75rem; font-weight:normal; color:var(--text-muted);">{{ feature_tuple[1] }}</span>
+            {% endif %}
+          </th>
+          {% endfor %}
           <th scope="col">🎯 Result</th>
           <th scope="col">📈 Confidence</th>
         </tr>
@@ -73,12 +75,11 @@
         {% for r in records %}
         <tr id="row-{{ loop.index }}">
           <td style="color:var(--text-muted); font-size:0.8rem;">{{ r.timestamp }}</td>
-          <td>{{ r.annual_rainfall }} <span style="color:var(--text-muted);font-size:0.7rem;">mm</span></td>
-          <td>{{ r.seasonal_rainfall }} <span style="color:var(--text-muted);font-size:0.7rem;">mm</span></td>
-          <td>{{ r.cloud_visibility }} <span style="color:var(--text-muted);font-size:0.7rem;">km</span></td>
-          <td>{{ r.humidity }} <span style="color:var(--text-muted);font-size:0.7rem;">%</span></td>
-          <td>{{ r.temperature }} <span style="color:var(--text-muted);font-size:0.7rem;">°C</span></td>
-          <td>{{ r.river_level }} <span style="color:var(--text-muted);font-size:0.7rem;">m</span></td>
+          
+          {% for feature_key in labels.keys() %}
+          <td>{{ r[feature_key] }}</td>
+          {% endfor %}
+
           <td>
             <span class="tag {{ 'flood' if r.prediction == 'Flood' else 'no-flood' }}"
                   aria-label="Prediction: {{ r.prediction }}">

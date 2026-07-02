@@ -1,33 +1,37 @@
-"""
-utils/preprocessing.py
------------------------
-Shared preprocessing helpers used by the Flask Application Layer.
-"""
-
 import joblib
-import numpy as np
+import pandas as pd
 
+# The exact feature names expected by the model
 FEATURE_NAMES = [
-    "annual_rainfall",
-    "seasonal_rainfall",
-    "cloud_visibility",
-    "humidity",
-    "temperature",
-    "river_level",
+    "Temp",
+    "Humidity",
+    "Cloud Cover",
+    "ANNUAL",
+    "Jan-Feb",
+    "Mar-May",
+    "Jun-Sep",
+    "Oct-Dec",
+    "avgjune",
+    "sub"
 ]
 
+# Human-readable labels for the UI and history table (Label, Unit)
 FEATURE_LABELS = {
-    "annual_rainfall": ("Annual Rainfall", "mm"),
-    "seasonal_rainfall": ("Seasonal (Monsoon) Rainfall", "mm"),
-    "cloud_visibility": ("Cloud Visibility", "km"),
-    "humidity": ("Humidity", "%"),
-    "temperature": ("Temperature", "°C"),
-    "river_level": ("River Level", "m"),
+    "Temp": ("Temperature", "°C"),
+    "Humidity": ("Humidity", "%"),
+    "Cloud Cover": ("Cloud Cover", "%"),
+    "ANNUAL": ("Annual Rainfall", "mm"),
+    "Jan-Feb": ("Jan-Feb Rainfall", "mm"),
+    "Mar-May": ("Mar-May Rainfall", "mm"),
+    "Jun-Sep": ("Jun-Sep Rainfall", "mm"),
+    "Oct-Dec": ("Oct-Dec Rainfall", "mm"),
+    "avgjune": ("Average June Rainfall", "mm"),
+    "sub": ("Sub-Division Index", "")
 }
 
 
-def load_artifacts(model_path="model/floods.save", scaler_path="model/scaler.save"):
-    """Load the trained model and scaler from disk."""
+def load_artifacts(model_path, scaler_path):
+    """Loads the serialized model and scaler."""
     model = joblib.load(model_path)
     scaler = joblib.load(scaler_path)
     return model, scaler
@@ -35,28 +39,39 @@ def load_artifacts(model_path="model/floods.save", scaler_path="model/scaler.sav
 
 def validate_form_input(form_data):
     """
-    Validate raw Flask form input.
-    Returns (values: list[float], error: str|None)
+    Validates that all required fields are present and numeric.
+    Returns: (list_of_values, error_string)
     """
     values = []
     for feature in FEATURE_NAMES:
-        raw = form_data.get(feature, "").strip()
-        if raw == "":
-            return None, f"Missing value for {FEATURE_LABELS[feature][0]}."
+        raw_val = form_data.get(feature)
+        if raw_val is None or raw_val.strip() == "":
+            return None, f"Missing value for {FEATURE_LABELS[feature]}"
         try:
-            val = float(raw)
+            val = float(raw_val)
+            values.append(val)
         except ValueError:
-            return None, f"Invalid number for {FEATURE_LABELS[feature][0]}."
-        if val < 0:
-            return None, f"{FEATURE_LABELS[feature][0]} cannot be negative."
-        values.append(val)
+            return None, f"Invalid number provided for {FEATURE_LABELS[feature]}"
     return values, None
 
 
 def preprocess_and_predict(model, scaler, values):
-    """Scale input values and run prediction + probability."""
-    arr = np.array(values).reshape(1, -1)
-    scaled = scaler.transform(arr)
-    prediction = int(model.predict(scaled)[0])
-    probability = float(model.predict_proba(scaled)[0][1])
-    return prediction, probability
+    """
+    Scales the input values and makes a prediction.
+    Returns: (prediction_class, probability_of_flood)
+    """
+    # 1. Convert to DataFrame (so scaler receives feature names properly if it expects them)
+    # The models were trained on these exact columns
+    input_df = pd.DataFrame([values], columns=FEATURE_NAMES)
+
+    # 2. Scale
+    scaled_data = scaler.transform(input_df)
+
+    # 3. Predict
+    prediction = int(model.predict(scaled_data)[0])
+    
+    # 4. Probabilities (Index 1 is the probability of class 1 / Flood)
+    probs = model.predict_proba(scaled_data)[0]
+    prob = float(probs[1])
+
+    return prediction, prob

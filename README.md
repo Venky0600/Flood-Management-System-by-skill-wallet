@@ -2,10 +2,10 @@
 
 <img src="https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
 <img src="https://img.shields.io/badge/Flask-2.x-000000?style=for-the-badge&logo=flask&logoColor=white"/>
-<img src="https://img.shields.io/badge/XGBoost-Deployed-FF6600?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PC9zdmc+"/>
+<img src="https://img.shields.io/badge/Random Forest-Deployed-FF6600?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PC9zdmc+"/>
 <img src="https://img.shields.io/badge/Scikit--Learn-1.x-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white"/>
 <img src="https://img.shields.io/badge/IBM%20Cloud-Ready-1261FE?style=for-the-badge&logo=ibmcloud&logoColor=white"/>
-<img src="https://img.shields.io/badge/Accuracy-96.55%25-00C853?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/Accuracy-95.65%25-00C853?style=for-the-badge"/>
 
 </div>
 
@@ -16,7 +16,7 @@
 # 🌊 Rising Waters
 ## A Machine Learning Approach to Flood Prediction
 
-*An intelligent flood risk early-warning system powered by XGBoost — built for disaster management authorities, meteorologists, and emergency response coordinators.*
+*An intelligent flood risk early-warning system powered by Random Forest — built for disaster management authorities, meteorologists, and emergency response coordinators.*
 
 **[🔍 Run Prediction](#-quick-start) · [📊 Model Results](#-model-performance) · [🏗️ Architecture](#-system-architecture) · [☁️ Deployment](#-deployment)**
 
@@ -46,9 +46,9 @@
 
 Floods are among the most devastating natural disasters, claiming thousands of lives and displacing millions every year. Despite their recurring nature, the lack of timely and accurate early-warning systems continues to amplify their destructive impact. **Conventional forecasting methods often fall short in predicting floods at the right time**, leaving authorities and communities with insufficient opportunity to respond.
 
-**Rising Waters** addresses that gap by building a **machine learning-powered flood prediction system** trained on historical weather data. Using four classification algorithms — *Decision Tree, Random Forest, K-Nearest Neighbours (KNN), and XGBoost* — the system analyses meteorological features to predict the likelihood of a flood event.
+**Rising Waters** addresses that gap by building a **machine learning-powered flood prediction system** trained on historical weather data. Using four classification algorithms — *Decision Tree, Random Forest, K-Nearest Neighbours (KNN), and Random Forest* — the system analyses meteorological features to predict the likelihood of a flood event.
 
-The best-performing model (**XGBoost at 96.55% accuracy**) is saved and integrated into a **Flask web application**, enabling disaster management teams to monitor flood risk predictions through an intuitive, accessible interface — deployable on **IBM Cloud** for global accessibility.
+The best-performing model (**Random Forest at 95.65% accuracy**) is saved and integrated into a **Flask web application**, enabling disaster management teams to monitor flood risk predictions through an intuitive, accessible interface — deployable on **IBM Cloud** for global accessibility.
 
 ---
 
@@ -56,7 +56,7 @@ The best-performing model (**XGBoost at 96.55% accuracy**) is saved and integrat
 
 | Feature | Description |
 |---|---|
-| 🤖 **ML-Powered Prediction** | XGBoost classifier trained on 5,000+ weather records |
+| 🤖 **ML-Powered Prediction** | Random Forest classifier trained on 5,000+ weather records |
 | ⚡ **Instant Results** | Real-time flood / no-flood prediction in milliseconds |
 | 📄 **Dual Result Pages** | Separate dedicated pages for Flood Chance and No Flood Chance |
 | 📋 **Prediction History** | Full audit log of all past predictions with timestamps |
@@ -76,7 +76,7 @@ The best-performing model (**XGBoost at 96.55% accuracy**) is saved and integrat
 ║  USER LAYER  ║ PRESENTATION     ║  APPLICATION      ║ ML LAYER     ║ DATA LAYER ║
 ║              ║ LAYER            ║  LAYER            ║              ║            ║
 ║   ┌──────┐   ║  ┌────────────┐  ║  ┌─────────────┐  ║  ┌────────┐  ║ ┌────────┐ ║
-║   │      │   ║  │ Home Page  │  ║  │   Flask     │  ║  │XGBoost │  ║ │Dataset │ ║
+║   │      │   ║  │ Home Page  │  ║  │   Flask     │  ║  │Random Forest │  ║ │Dataset │ ║
 ║   │ User │   ║  │(Dashboard) │  ║  │  Routing    │  ║  │ Model  │  ║ │(Kaggle)│ ║
 ║   │      │   ║  └────────────┘  ║  └──────┬──────┘  ║  │        │  ║ └───┬────┘ ║
 ║   └──┬───┘   ║  ┌────────────┐  ║         │         ║  │floods  │  ║     │      ║
@@ -143,7 +143,7 @@ flowchart TD
     K --> F
 
     subgraph ML["🤖 Machine Learning Layer"]
-        M["🌳 XGBoost Model\n(floods.save)"]
+        M["🌳 Random Forest Model\n(floods.save)"]
         N["⚖️ StandardScaler\n(scaler.save)"]
     end
 
@@ -218,7 +218,7 @@ The Flask application consists of **6 pages**, with **4 core pages** explicitly 
 
 ```
 Backend          Python 3.11 · Flask 2.x · Jinja2
-ML Framework     Scikit-learn · XGBoost · Joblib
+ML Framework     Scikit-learn · Random Forest · Joblib
 Data Processing  Pandas · NumPy
 Visualisation    Matplotlib · Seaborn
 Frontend         HTML5 · Vanilla CSS · JavaScript (ES6)
@@ -262,7 +262,7 @@ Step 1 — Environment Setup
 
 Step 2 — Dataset Collection
         Flood Prediction Dataset (Kaggle)
-        6 meteorological features + binary target
+        10 meteorological features + binary target
 
 Step 3 — Data Visualization & Analysis
         ├── Univariate Analysis  (distribution plots)
@@ -281,11 +281,11 @@ Step 5 — Model Building
         ├── Decision Tree    (max_depth=10)
         ├── Random Forest    (n_estimators=300)
         ├── KNN              (n_neighbors=5)
-        └── XGBoost          (n_estimators=500, lr=0.05)
+        └── Random Forest          (n_estimators=500, lr=0.05)
 
 Step 6 — Best Model Selection
         Evaluate: Confusion Matrix · Classification Report · Accuracy
-        Winner: XGBoost → saved as floods.save + scaler.save
+        Winner: Random Forest → saved as floods.save + scaler.save
 
 Step 7 — Flask Web Application
         Home · Predict · Flood Result · No Flood Result · History
@@ -300,7 +300,7 @@ Step 7 — Flask Web Application
 | Decision Tree | 78.17% | 0.78 | 0.78 | 0.78 |
 | K-Nearest Neighbours | 80.67% | 0.81 | 0.81 | 0.80 |
 | Random Forest | 82.00% | 0.82 | 0.82 | 0.82 |
-| **XGBoost ★ DEPLOYED** | **96.55%** | **0.97** | **0.97** | **0.96** |
+| **Random Forest ★ DEPLOYED** | **95.65%** | **0.97** | **0.97** | **0.96** |
 
 ```
 Model Accuracy Comparison
@@ -308,7 +308,7 @@ Model Accuracy Comparison
 Decision Tree    ████████████████████░░░░░░░░░░░   78.17%
 KNN              █████████████████████░░░░░░░░░░   80.67%
 Random Forest    █████████████████████░░░░░░░░░░   82.00%
-XGBoost  ★       ████████████████████████████████   96.55%
+Random Forest  ★       ████████████████████████████████   95.65%
 ─────────────────────────────────────────────────────────
 ★ Deployed Model · Saved as floods.save via Joblib
 ```
@@ -395,7 +395,7 @@ rising-waters-flood-prediction/
 │   │   ├── generate_dataset.py         # Synthetic dataset generator
 │   │   ├── data_analysis.py            # EDA + visualization scripts
 │   │   ├── train_model.py              # Model training pipeline (Steps 4-6)
-│   │   ├── floods.save                 # ★ Deployed XGBoost model (joblib)
+│   │   ├── floods.save                 # ★ Deployed Random Forest model (joblib)
 │   │   ├── scaler.save                 # StandardScaler (joblib)
 │   │   ├── model.pkl                   # Model (alternate format)
 │   │   ├── scaler.pkl                  # Scaler (alternate format)
@@ -444,7 +444,7 @@ rising-waters-flood-prediction/
 
 ### Scenario 3 — Model Validation & Performance Assessment
 
-> A government analyst tests the model against historical flood event data to evaluate its accuracy. The **XGBoost model achieves 96.55% accuracy** on test data, confirming the system's reliability for operational use.
+> A government analyst tests the model against historical flood event data to evaluate its accuracy. The **Random Forest model achieves 95.65% accuracy** on test data, confirming the system's reliability for operational use.
 
 ---
 
@@ -489,9 +489,9 @@ docker run -p 5000:5000 rising-waters
 
 | Category | Skills |
 |---|---|
-| **Machine Learning** | Supervised Learning · Classification · XGBoost · Random Forest · Decision Tree · KNN |
+| **Machine Learning** | Supervised Learning · Classification · Random Forest · Random Forest · Decision Tree · KNN |
 | **Data Science** | EDA · Feature Engineering · Data Preprocessing · Outlier Detection · StandardScaler |
-| **Python Libraries** | NumPy · Pandas · Scikit-learn · XGBoost · Matplotlib · Seaborn · Joblib |
+| **Python Libraries** | NumPy · Pandas · Scikit-learn · Random Forest · Matplotlib · Seaborn · Joblib |
 | **Web Development** | Flask · Jinja2 · HTML5 · CSS3 · JavaScript · Responsive Design |
 | **DevOps / Cloud** | Docker · IBM Cloud · Git · GitHub · Procfile · Manifest |
 | **ML Concepts** | Confusion Matrix · Classification Report · Train-Test Split · Model Persistence |

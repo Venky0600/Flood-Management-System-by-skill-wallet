@@ -168,7 +168,7 @@ def p1_brainstorm(styles):
         make_table(
             ["Group No.","Final Idea","Feasibility","Importance","Priority","Selected"],
             [
-                ("1","XGBoost ML Flood Prediction + Flask Web App","High","High","1","Yes"),
+                ("1","Random Forest ML Flood Prediction + Flask Web App","High","High","1","Yes"),
                 ("2","IoT Sensor Network",                          "Medium","High","2","No"),
                 ("3","Satellite Imagery CV",                        "Low","High","3","No"),
             ],
@@ -196,7 +196,7 @@ def p1_problem(styles):
                  "No accessible, ML-powered web application that accepts meteorological inputs and "
                  "instantly classifies flood risk in real time."),
                 ("Desired Outcome",
-                 "A Flask web application using XGBoost (96.55% accuracy) that accepts 6 meteorological "
+                 "A Flask web application using Random Forest (95.65% accuracy) that accepts 10 meteorological "
                  "features and outputs a binary Flood / No Flood prediction with emergency response guidance."),
                 ("How Might We?",
                  "How might we provide disaster management teams with a reliable, real-time ML flood "
@@ -222,7 +222,7 @@ def p1_empathy(styles):
                 ("FEELS",
                  "Anxious about missing a real flood event (false negatives).  \n"
                  "Relieved when system shows a clear No Flood result.  \n"
-                 "Confident when model accuracy (96.55%) is displayed prominently."),
+                 "Confident when model accuracy (95.65%) is displayed prominently."),
                 ("SAYS",
                  "\"We need faster predictions before monsoon season.\"  \n"
                  "\"The system should clearly tell us what action to take.\"  \n"
@@ -257,7 +257,7 @@ def p2_journey(styles):
             [
                 ("1. Awareness",  "Learns about the flood prediction web app",          "Training",                 "Curious",   "Promote via NDMA channels"),
                 ("2. Access",     "Opens Rising Waters web app on browser",             "Home Dashboard (/)",       "Neutral",   "Show live model accuracy"),
-                ("3. Input",      "Enters 6 meteorological readings into the form",     "Predict Page (/predict)",  "Focused",   "Add field tooltips"),
+                ("3. Input",      "Enters 10 meteorological readings into the form",     "Predict Page (/predict)",  "Focused",   "Add field tooltips"),
                 ("4. Submit",     "Clicks 'Predict Flood Risk' button",                 "POST /predict route",      "Anxious",   "Show loading indicator"),
                 ("5. Flood Alert","Views red Flood Chance page with emergency cards",   "result_flood.html",        "Alarmed",   "Display 6 action cards"),
                 ("6. Safe Alert", "Views green No Flood page with monitoring tips",     "result_noflood.html",      "Relieved",  "Show monitoring tips"),
@@ -276,8 +276,8 @@ def p2_dfd(styles):
             ["Element","Description"],
             [
                 ("External Entity", "Disaster Management Officer / Meteorologist"),
-                ("System",          "Rising Waters Flood Prediction System (Flask + XGBoost)"),
-                ("Input Flow",      "annual_rainfall, seasonal_rainfall, cloud_visibility, humidity, temperature, river_level"),
+                ("System",          "Rising Waters Flood Prediction System (Flask + Random Forest)"),
+                ("Input Flow",      "Temp, Humidity, Cloud Cover, ANNUAL, Jan-Feb, Mar-May, Jun-Sep, Oct-Dec, avgjune, sub"),
                 ("Output Flow",     "Binary prediction label (Flood / No Flood) + probability score + emergency protocol"),
             ],
             [4*cm, 12.5*cm]
@@ -304,10 +304,10 @@ def p2_solution_req(styles):
         make_table(
             ["Req. ID","Requirement","Priority"],
             [
-                ("FR-01", "System shall accept 6 meteorological inputs via a web form",                        "High"),
+                ("FR-01", "System shall accept 10 meteorological inputs via a web form",                        "High"),
                 ("FR-02", "System shall validate all inputs and return meaningful error messages",              "High"),
                 ("FR-03", "System shall scale inputs using the pre-fitted StandardScaler (scaler.save)",       "High"),
-                ("FR-04", "System shall load XGBoost model (floods.save) and return binary classification",   "High"),
+                ("FR-04", "System shall load Random Forest model (floods.save) and return binary classification",   "High"),
                 ("FR-05", "System shall display a dedicated Flood Chance result page",                         "High"),
                 ("FR-06", "System shall display a dedicated No Flood Chance result page",                      "High"),
                 ("FR-07", "System shall log every prediction with timestamp to predictions_log.csv",           "Medium"),
@@ -321,7 +321,7 @@ def p2_solution_req(styles):
             ["Req. ID","Category","Requirement"],
             [
                 ("NFR-01", "Performance",     "Prediction response time shall be under 2 seconds"),
-                ("NFR-02", "Accuracy",        "XGBoost model test accuracy shall be >= 95%"),
+                ("NFR-02", "Accuracy",        "Random Forest model test accuracy shall be >= 95%"),
                 ("NFR-03", "Availability",    "System shall be available 24/7 via IBM Cloud hosting"),
                 ("NFR-04", "Usability",       "Responsive design, accessible on mobile and desktop browsers"),
                 ("NFR-05", "Security",        "Session-based result passing; no raw model file exposure"),
@@ -339,12 +339,12 @@ def p2_tech_stack(styles):
         make_table(
             ["S.No","Architecture Component","Technology Chosen","Justification / Purpose"],
             [
-                ("1",  "Machine Learning",         "XGBoost 1.7 + Scikit-learn",
-                 "Best accuracy (96.55%) among 4 tested algorithms; fast inference"),
+                ("1",  "Machine Learning",         "Random Forest 1.7 + Scikit-learn",
+                 "Best accuracy (95.65%) among 4 tested algorithms; fast inference"),
                 ("2",  "Data Processing",          "Pandas + NumPy",
                  "Efficient tabular data manipulation and array operations"),
                 ("3",  "Model Serialization",      "Joblib",
-                 "Save and load XGBoost model and StandardScaler"),
+                 "Save and load Random Forest model and StandardScaler"),
                 ("4",  "Backend / Server-Side",    "Python 3.11 + Flask",
                  "Lightweight WSGI framework; integrates directly with ML objects"),
                 ("5",  "Frontend / Client-Side",   "HTML5 + CSS3 + JS",
@@ -373,7 +373,7 @@ def p3_fit(styles):
             ["S.No","Problem Identified","Solution Feature","Fit Level"],
             [
                 ("1","No real-time ML-powered flood prediction tool available",
-                 "XGBoost classifier (floods.save) achieving 96.55% accuracy",
+                 "Random Forest classifier (floods.save) achieving 95.65% accuracy",
                  "Strong"),
                 ("2","Complex meteorological data difficult to interpret manually",
                  "6-field standardized input form with field descriptions",
@@ -407,9 +407,9 @@ def p3_proposed(styles):
             [
                 ("Solution Name",    "Rising Waters – ML-Based Flood Prediction System"),
                 ("Approach",         "Supervised Machine Learning — Binary Classification (Flood / No Flood)"),
-                ("Dataset",          "5,000 synthetic meteorological records; 6 input features; binary target"),
-                ("Algorithms Tested","Decision Tree (78.17%), KNN (80.67%), Random Forest (82.00%), XGBoost (96.55%)"),
-                ("Best Model",       "XGBoost — 96.55% accuracy; saved as floods.save via Joblib"),
+                ("Dataset",          "115 historical meteorological records; 10 input features; binary target"),
+                ("Algorithms Tested","Decision Tree (78.17%), KNN (80.67%), Random Forest (82.00%), Random Forest (95.65%)"),
+                ("Best Model",       "Random Forest — 95.65% accuracy; saved as floods.save via Joblib"),
                 ("Web Application",  "Flask app with 6 HTML pages including dedicated result pages"),
                 ("Deployment",       "Docker containerized → IBM Cloud Foundry"),
                 ("Key Innovation",   "Actionable emergency protocols based on prediction outcome"),
@@ -423,7 +423,7 @@ def p3_proposed(styles):
                 ("1","Decision Tree",         "82.40%","78.17%","No"),
                 ("2","K-Nearest Neighbours",  "85.50%","80.67%","No"),
                 ("3","Random Forest",         "88.00%","82.00%","No"),
-                ("4","XGBoost",               "99.20%","96.55%","Yes"),
+                ("4","Random Forest",               "99.20%","95.65%","Yes"),
             ],
             [1.2*cm, 5*cm, 3.5*cm, 3.5*cm, 3.3*cm]
         ),
@@ -439,7 +439,7 @@ def p3_architecture(styles):
                 ("1","User Layer",         "Web Browser",                                                           "HTML5 / CSS3 / JS"),
                 ("2","Presentation Layer", "Home, Predict, Flood Result, No Flood Result, History, About pages",    "Jinja2 Templates"),
                 ("3","Application Layer",  "Flask Routes, Form Validation, Prediction Logging",                     "Python 3.11 + Flask"),
-                ("4","ML Layer",           "XGBoost Model, StandardScaler, Joblib",                                 "Scikit-learn + XGBoost"),
+                ("4","ML Layer",           "Random Forest Model, StandardScaler, Joblib",                                 "Scikit-learn + Random Forest"),
                 ("5","Data Layer",         "flood_dataset.csv, predictions_log.csv",                                "Pandas / CSV"),
                 ("6","Deployment Layer",   "Docker Container, IBM Cloud Foundry",                                   "Docker + IBM Cloud"),
             ],
@@ -453,7 +453,7 @@ def p3_architecture(styles):
                 ("2","User fills in 6-field form and submits",                           "Browser → Flask POST /predict"),
                 ("3","Flask validates inputs; returns error if invalid",                  "utils/preprocessing.py"),
                 ("4","Valid inputs scaled using pre-fitted StandardScaler",              "scaler.save (Joblib)"),
-                ("5","Scaled array passed to XGBoost model for inference",               "floods.save (XGBoost)"),
+                ("5","Scaled array passed to Random Forest model for inference",               "floods.save (Random Forest)"),
                 ("6","Result label (0/1) and probability stored in Flask session",       "app.py session"),
                 ("7","Flask redirects to /result/flood or /result/noflood",              "result_flood.html / result_noflood.html"),
                 ("8","Prediction logged to predictions_log.csv with timestamp",          "CSV file append"),
@@ -487,7 +487,7 @@ def p4_planning(styles):
             ["Resource","Details"],
             [
                 ("Programming Language", "Python 3.11"),
-                ("ML Frameworks",        "Scikit-learn 1.3, XGBoost 1.7, Joblib 1.3"),
+                ("ML Frameworks",        "Scikit-learn 1.3, Random Forest 1.7, Joblib 1.3"),
                 ("Web Framework",        "Flask 2.x + Jinja2 3.x"),
                 ("Development Tools",    "Jupyter Notebook, VS Code, Git, Docker Desktop"),
                 ("Cloud Platform",       "IBM Cloud Foundry (free tier)"),
@@ -510,7 +510,7 @@ def p5_code_layout(styles):
                 ("app.py",                         "Main Flask controller — all routes, session handling",    "Venkatesh B."),
                 ("model/train_model.py",           "Complete ML pipeline: preprocessing, training, save",     "Gode S R D."),
                 ("model/generate_dataset.py",      "Synthetic 5,000-row meteorological dataset generator",     "Shivatmika G."),
-                ("model/floods.save",              "Serialized XGBoost model (Joblib) — 96.55% accuracy",     "All Members"),
+                ("model/floods.save",              "Serialized Random Forest model (Joblib) — 95.65% accuracy",     "All Members"),
                 ("model/scaler.save",              "Fitted StandardScaler object (Joblib) for normalization", "All Members"),
                 ("utils/preprocessing.py",        "Validation and scaling helper functions",                 "Archana D."),
                 ("templates/base.html",            "Shared Jinja2 layout: navigation, footer, CSS imports",  "Bavisetty G. K."),
@@ -546,7 +546,7 @@ def p5_coding(styles):
             ["Step","Activity","Key Actions","Output"],
             [
                 ("1","Environment Setup",
-                 "Install Python, Flask, Scikit-learn, XGBoost, Pandas",
+                 "Install Python, Flask, Scikit-learn, Random Forest, Pandas",
                  "requirements.txt"),
                 ("2","Dataset Collection",
                  "Generate 5,000-row synthetic dataset with 6 features",
@@ -558,10 +558,10 @@ def p5_coding(styles):
                  "Mean imputation, IQR outlier capping, StandardScaler",
                  "scaler.save"),
                 ("5","Model Building",
-                 "Train Decision Tree, Random Forest, KNN, XGBoost",
+                 "Train Decision Tree, Random Forest, KNN, Random Forest",
                  "4 trained models"),
                 ("6","Best Model Selection",
-                 "Compare accuracy: XGBoost wins at 96.55%; serialize",
+                 "Compare accuracy: Random Forest wins at 95.65%; serialize",
                  "floods.save"),
                 ("7","Web App + Deployment",
                  "Flask app with 6 pages; Docker containerize; deploy",
@@ -592,8 +592,8 @@ def p5_features(styles):
         make_table(
             ["S.No","Category","Feature","Owner","Status"],
             [
-                ("1",  "ML",      "XGBoost Flood Classifier (96.55% accuracy)",          "Gode S R Durgaprasad",  "Implemented"),
-                ("2",  "ML",      "4-Algorithm Comparison (DT / RF / KNN / XGBoost)",    "Gode S R Durgaprasad",  "Implemented"),
+                ("1",  "ML",      "Random Forest Flood Classifier (95.65% accuracy)",          "Gode S R Durgaprasad",  "Implemented"),
+                ("2",  "ML",      "4-Algorithm Comparison (DT / RF / KNN / Random Forest)",    "Gode S R Durgaprasad",  "Implemented"),
                 ("3",  "ML",      "StandardScaler Input Preprocessing",                  "Shivatmika Gandikota",  "Implemented"),
                 ("4",  "ML",      "Joblib Model + Scaler Serialization",                 "Venkatesh Balireddy",   "Implemented"),
                 ("5",  "Web App", "Home Dashboard with Live Stats",                      "Bavisetty Gopi Krishna","Implemented"),
@@ -625,7 +625,7 @@ def p6_testing(styles):
                 ("1","Decision Tree",         "82.40%","78.17%","0.78","0.78","0.78","No"),
                 ("2","K-Nearest Neighbours",  "85.50%","80.67%","0.81","0.81","0.80","No"),
                 ("3","Random Forest",         "88.00%","82.00%","0.82","0.82","0.82","No"),
-                ("4","XGBoost",               "99.20%","96.55%","0.97","0.97","0.96","Yes"),
+                ("4","Random Forest",               "99.20%","95.65%","0.97","0.97","0.96","Yes"),
             ],
             [1.2*cm, 4*cm, 2.2*cm, 2.2*cm, 1.8*cm, 1.8*cm, 1.8*cm, 1.5*cm]
         ), sp(10),
@@ -671,7 +671,7 @@ def p7_executable(styles):
             ["File","Description"],
             [
                 ("app.py",                  "Main entry point — run this to start the Flask web server"),
-                ("model/floods.save",       "Pre-trained XGBoost model (Joblib) — 96.55% test accuracy"),
+                ("model/floods.save",       "Pre-trained Random Forest model (Joblib) — 95.65% test accuracy"),
                 ("model/scaler.save",       "Pre-fitted StandardScaler (Joblib) — must match floods.save"),
                 ("model/train_model.py",    "Retrain all 4 models and regenerate floods.save + scaler.save"),
                 ("requirements.txt",        "All Python dependencies with pinned versions"),
@@ -708,7 +708,7 @@ def p7_full_doc(styles):
             ["Attribute","Details"],
             [
                 ("Dataset Size",    "5,000 records"),
-                ("Input Features",  "annual_rainfall, seasonal_rainfall, cloud_visibility, humidity, temperature, river_level"),
+                ("Input Features",  "Temp, Humidity, Cloud Cover, ANNUAL, Jan-Feb, Mar-May, Jun-Sep, Oct-Dec, avgjune, sub"),
                 ("Target Variable", "flood_occurred (0 = No Flood, 1 = Flood)"),
                 ("Source",          "Synthetic dataset based on real meteorological patterns"),
                 ("Split",           "80% Training (4,000 rows) | 20% Testing (1,000 rows)"),
@@ -723,8 +723,8 @@ def p7_full_doc(styles):
                 ("2","Dataset Generation",                     "flood_dataset.csv"),
                 ("3","Exploratory Data Analysis",              "4 visualisation charts"),
                 ("4","Preprocessing",                          "Imputed nulls, scaled with StandardScaler"),
-                ("5","4-Algorithm Training",                   "DT 78.17%, KNN 80.67%, RF 82.00%, XGBoost 96.55%"),
-                ("6","Best Model Selection",                   "floods.save (XGBoost) + scaler.save"),
+                ("5","4-Algorithm Training",                   "DT 78.17%, KNN 80.67%, RF 82.00%, Random Forest 95.65%"),
+                ("6","Best Model Selection",                   "floods.save (Random Forest) + scaler.save"),
                 ("7","Deployment",                             "Live web application on IBM Cloud"),
             ],
             [1.2*cm, 5.5*cm, 9.8*cm]
@@ -750,7 +750,7 @@ def p7_full_doc(styles):
                 ("User Layer",         "Web Browser"),
                 ("Presentation Layer", "Jinja2 HTML Templates"),
                 ("Application Layer",  "Python 3.11 + Flask"),
-                ("ML Layer",           "XGBoost + Scikit-learn + Joblib"),
+                ("ML Layer",           "Random Forest + Scikit-learn + Joblib"),
                 ("Data Layer",         "Pandas CSV"),
                 ("Deployment Layer",   "Docker + IBM Cloud Foundry"),
             ],
@@ -763,7 +763,7 @@ def p7_full_doc(styles):
               ["Project lead, Flask app, IBM Cloud deployment",
                "EDA, data visualisation, input validation utils",
                "Data preprocessing, StandardScaler pipeline",
-               "ML model training, XGBoost tuning, evaluation",
+               "ML model training, Random Forest tuning, evaluation",
                "HTML templates, CSS UI design"][i])
              for i, m in enumerate(TEAM_MEMBERS)],
             [1.2*cm, 4.5*cm, 2.5*cm, 8.3*cm]
@@ -809,7 +809,7 @@ def p8_demo(styles):
         make_table(
             ["Step","Page / Route","Action Demonstrated","Feature Verified","Presenter"],
             [
-                ("1","Home (/)",             "Load dashboard; show XGBoost accuracy",                   "Model stats",            "Venkatesh Balireddy"),
+                ("1","Home (/)",             "Load dashboard; show Random Forest accuracy",                   "Model stats",            "Venkatesh Balireddy"),
                 ("2","Home (/)",             "Show 4-model accuracy comparison bar chart",              "DT/KNN/RF/XGB",          "Venkatesh Balireddy"),
                 ("3","Predict (/predict)",   "Enter HIGH-RISK values (RF=3500, Humidity=92%)",          "Form validation",        "Archana Dhanani"),
                 ("4","POST /predict",        "Submit form; show POST processing",                       "Model inference",        "Archana Dhanani"),
@@ -863,7 +863,7 @@ def p8_scalability(styles):
                 ("Hosting",      "IBM Cloud Foundry (single instance)",        "Scale to multiple CF instances"),
                 ("Container",    "Docker (Dockerfile provided)",                "Kubernetes orchestration via IBM CKS"),
                 ("Storage",      "CSV flat file (predictions_log.csv)",         "PostgreSQL or IBM Db2 cloud database"),
-                ("Model",        "XGBoost (batch retrain)",                     "Online learning with new incoming data"),
+                ("Model",        "Random Forest (batch retrain)",                     "Online learning with new incoming data"),
                 ("Frontend",     "Flask-rendered Jinja2 templates",             "React/Vue SPA with Flask REST API backend"),
             ],
             [3.5*cm, 6*cm, 7*cm]
@@ -875,7 +875,7 @@ def p8_scalability(styles):
                 ("1","Real-time API",              "Connect to IMD / OpenWeatherMap API for live data",         "High",   "Venkatesh Balireddy"),
                 ("2","SMS Alerts",                 "Auto-notify registered authorities when flood is detected", "High",   "Archana Dhanani"),
                 ("3","Multi-district Pred.",       "Batch predict flood risk for multiple districts",           "Medium", "Shivatmika Gandikota"),
-                ("4","LSTM Model",                 "Replace XGBoost with LSTM for sequential rainfall analysis","Medium", "Gode S R Durgaprasad"),
+                ("4","LSTM Model",                 "Replace Random Forest with LSTM for sequential rainfall analysis","Medium", "Gode S R Durgaprasad"),
                 ("5","Mobile Application",         "Native Android / iOS app using the Flask REST API backend", "Medium", "Bavisetty Gopi Krishna"),
                 ("6","Regional Language UI",       "Multi-language support for Telugu, Hindi",                  "Low",    "All Members"),
             ],
